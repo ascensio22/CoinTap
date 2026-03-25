@@ -359,7 +359,32 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--space-md);
+  padding: var(--space-sm) 0;
+  gap: var(--space-sm);
+}
+
+.upgrade-header .upgrade-title {
+  flex: 1;
+}
+
+.upgrade-header .upgrade-rate {
+  flex-shrink: 0;
+  min-width: 60px;
+  text-align: right;
+}
+
+.upgrade-header .upgrade-btn {
+  flex-shrink: 0;
+  width: auto;
+  min-width: 90px;
+  height: 40px;
+  font-size: 14px;
+}
+
+.upgrade-divider {
+  height: 1px;
+  background: var(--border-color);
+  margin: var(--space-xs) 0;
 }
 
 .upgrade-title {

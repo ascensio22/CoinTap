@@ -40,20 +40,37 @@
     <section class="upgrade-section">
       <div class="upgrade-header">
         <div class="upgrade-title">
-          <img class="upgrade-icon" id="autoClickIcon" src="assets/images/lightning.svg" alt="Auto Clicker">
-          <span>Auto Clicker</span>
+          <img class="upgrade-icon" id="autoClickIcon" src="assets/images/lightning.svg" alt="自动点击">
+          <span>自动点击</span>
           <span class="upgrade-level" id="autoClickLevel">Lv.0</span>
         </div>
         <div class="upgrade-rate" id="autoClickRate">+0/sec</div>
+        <button class="upgrade-btn" id="upgradeBtn" aria-label="升级自动点击">
+          <span class="upgrade-btn-text">升级</span>
+          <span class="upgrade-btn-cost">
+            <span class="coin-icon-small">$</span>
+            <span id="upgradeCost">10</span>
+          </span>
+        </button>
       </div>
 
-      <button class="upgrade-btn" id="upgradeBtn" aria-label="升级 Auto Clicker">
-        <span class="upgrade-btn-text">升级</span>
-        <span class="upgrade-btn-cost">
-          <span class="coin-icon-small">$</span>
-          <span id="upgradeCost">10</span>
-        </span>
-      </button>
+      <div class="upgrade-divider"></div>
+
+      <div class="upgrade-header">
+        <div class="upgrade-title">
+          <img class="upgrade-icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFD700'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/%3E%3C/svg%3E" alt="点击加成">
+          <span>点击加成</span>
+          <span class="upgrade-level" id="clickPowerLevel">Lv.0</span>
+        </div>
+        <div class="upgrade-rate" id="clickPowerRate">+1/click</div>
+        <button class="upgrade-btn" id="clickPowerUpgradeBtn" aria-label="升级点击加成">
+          <span class="upgrade-btn-text">升级</span>
+          <span class="upgrade-btn-cost">
+            <span class="coin-icon-small">$</span>
+            <span id="clickPowerUpgradeCost">15</span>
+          </span>
+        </button>
+      </div>
     </section>
 
     <!-- Loading State -->

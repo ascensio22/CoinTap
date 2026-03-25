@@ -16,6 +16,7 @@
   let gameState = {
     coins: 0,
     clickPower: 1,
+    clickPowerLevel: 0,
     autoClickLevel: 0,
     autoClickPower: 0,
     lastSaveTime: Date.now()
@@ -26,6 +27,10 @@
     return Math.floor(10 * Math.pow(1.5, level));
   }
 
+  function getClickPowerUpgradeCost(level) {
+    return Math.floor(15 * Math.pow(1.6, level));
+  }
+
   // ========================================
   // DOM Elements
   // ========================================
@@ -33,12 +38,17 @@
   const elements = {
     coinAmount: document.getElementById('coinAmount'),
     clickBtn: document.getElementById('clickBtn'),
+    clickBtnHint: document.querySelector('.click-btn-hint'),
     floatingCoins: document.getElementById('floatingCoins'),
     autoClickIcon: document.getElementById('autoClickIcon'),
     autoClickLevel: document.getElementById('autoClickLevel'),
     autoClickRate: document.getElementById('autoClickRate'),
     upgradeBtn: document.getElementById('upgradeBtn'),
     upgradeCost: document.getElementById('upgradeCost'),
+    clickPowerLevel: document.getElementById('clickPowerLevel'),
+    clickPowerRate: document.getElementById('clickPowerRate'),
+    clickPowerUpgradeBtn: document.getElementById('clickPowerUpgradeBtn'),
+    clickPowerUpgradeCost: document.getElementById('clickPowerUpgradeCost'),
     soundToggle: document.getElementById('soundToggle'),
     themeToggle: document.getElementById('themeToggle'),
     loadingOverlay: document.getElementById('loadingOverlay'),
@@ -301,6 +311,16 @@
     elements.upgradeCost.textContent = formatNumber(cost);
     elements.upgradeBtn.disabled = gameState.coins < cost;
 
+    // Update click power upgrade display
+    elements.clickPowerLevel.textContent = 'Lv.' + gameState.clickPowerLevel;
+    elements.clickPowerRate.textContent = '+' + gameState.clickPower + '/click';
+    const clickPowerCost = getClickPowerUpgradeCost(gameState.clickPowerLevel);
+    elements.clickPowerUpgradeCost.textContent = formatNumber(clickPowerCost);
+    elements.clickPowerUpgradeBtn.disabled = gameState.coins < clickPowerCost;
+
+    // Update click button hint
+    elements.clickBtnHint.textContent = '+' + gameState.clickPower;
+
     // Update auto click icon animation
     if (gameState.autoClickPower > 0) {
       elements.autoClickIcon.classList.add('pulse');
@@ -357,6 +377,33 @@
       elements.upgradeBtn.classList.add('success');
       setTimeout(() => {
         elements.upgradeBtn.classList.remove('success');
+      }, 300);
+
+      // Sound feedback
+      playSound('upgrade');
+
+      // Haptic feedback
+      if (navigator.vibrate) {
+        navigator.vibrate([20, 50, 20]);
+      }
+    }
+  }
+
+  function handleClickPowerUpgrade() {
+    const cost = getClickPowerUpgradeCost(gameState.clickPowerLevel);
+
+    if (gameState.coins >= cost) {
+      gameState.coins -= cost;
+      gameState.clickPowerLevel++;
+      gameState.clickPower = 1 + gameState.clickPowerLevel;
+
+      updateDisplay();
+      saveGame();
+
+      // Visual feedback
+      elements.clickPowerUpgradeBtn.classList.add('success');
+      setTimeout(() => {
+        elements.clickPowerUpgradeBtn.classList.remove('success');
       }, 300);
 
       // Sound feedback
@@ -486,6 +533,7 @@
     }, { passive: false });
 
     elements.upgradeBtn.addEventListener('click', handleUpgrade);
+    elements.clickPowerUpgradeBtn.addEventListener('click', handleClickPowerUpgrade);
     elements.soundToggle.addEventListener('click', toggleSound);
     elements.themeToggle.addEventListener('click', toggleTheme);
     elements.retryBtn.addEventListener('click', function() {
