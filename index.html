@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CoinTap</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">Coin<span>Tap</span></div>
+      <div class="header-actions">
+        <button class="sound-toggle" id="soundToggle" aria-label="切换音效"></button>
+        <button class="theme-toggle" id="themeToggle" aria-label="切换主题"></button>
+      </div>
+    </header>
+
+    <!-- Game Area -->
+    <main class="game-area">
+      <!-- Coin Display -->
+      <div class="coin-display">
+        <div class="coin-icon">$</div>
+        <span class="coin-amount" id="coinAmount">0</span>
+      </div>
+
+      <!-- Click Button -->
+      <button class="click-btn" id="clickBtn" aria-label="点击获得金币">
+        <span class="click-btn-text">CLICK</span>
+        <span class="click-btn-hint">+1</span>
+      </button>
+
+      <!-- Floating Coins Container -->
+      <div class="floating-coins" id="floatingCoins"></div>
+    </main>
+
+    <!-- Upgrade Section -->
+    <section class="upgrade-section">
+      <div class="upgrade-header">
+        <div class="upgrade-title">
+          <img class="upgrade-icon" id="autoClickIcon" src="assets/images/lightning.svg" alt="Auto Clicker">
+          <span>Auto Clicker</span>
+          <span class="upgrade-level" id="autoClickLevel">Lv.0</span>
+        </div>
+        <div class="upgrade-rate" id="autoClickRate">+0/sec</div>
+      </div>
+
+      <button class="upgrade-btn" id="upgradeBtn" aria-label="升级 Auto Clicker">
+        <span class="upgrade-btn-text">升级</span>
+        <span class="upgrade-btn-cost">
+          <span class="coin-icon-small">$</span>
+          <span id="upgradeCost">10</span>
+        </span>
+      </button>
+    </section>
+
+    <!-- Loading State -->
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">加载中...</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="error-overlay" id="errorOverlay" hidden>
+      <div class="error-icon">!</div>
+      <p class="error-text" id="errorText">加载失败</p>
+      <button class="retry-btn" id="retryBtn">重新加载</button>
+    </div>
+
+    <!-- Offline Return Modal -->
+    <div class="modal-overlay" id="offlineModal" hidden>
+      <div class="modal-content">
+        <h2 class="modal-title">欢迎回来!</h2>
+        <p class="modal-subtitle">离线期间获得的金币:</p>
+        <div class="offline-earnings">
+          <span class="coin-icon-large">$</span>
+          <span class="offline-amount" id="offlineEarnings">0</span>
+        </div>
+        <button class="collect-btn" id="collectBtn">收下!</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
