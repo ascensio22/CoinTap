@@ -370,7 +370,7 @@
   }
 
   // Auto click tick - runs every 100ms for smooth display
-  let lastAutoClickTick = 0;
+  let lastAutoClickTick = Date.now();
 
   function autoClickTick() {
     if (gameState.autoClickPower <= 0) return;
