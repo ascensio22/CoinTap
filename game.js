@@ -270,46 +270,12 @@
   function getStorage() {
     return {
       async get(key) {
-        // Try Telegram Cloud Storage first
-        if (isTelegramEnv && tg && tg.cloudStorage) {
-          try {
-            // Add timeout for cloud storage operations
-            const timeoutPromise = new Promise((_, reject) =>
-              setTimeout(() => reject(new Error('CloudStorage timeout')), 3000)
-            );
-            const value = await Promise.race([
-              tg.cloudStorage.getItem(key),
-              timeoutPromise
-            ]);
-            if (value !== null && value !== undefined) {
-              return value;
-            }
-          } catch (e) {
-            console.warn('[CoinTap] CloudStorage read failed, falling back to localStorage:', e.message);
-          }
-        }
-        // Fallback to localStorage
+        // Always use localStorage for reliability
         return localStorage.getItem(key);
       },
 
       async set(key, value) {
-        // Try Telegram Cloud Storage first
-        if (isTelegramEnv && tg && tg.cloudStorage) {
-          try {
-            // Add timeout for cloud storage operations
-            const timeoutPromise = new Promise((_, reject) =>
-              setTimeout(() => reject(new Error('CloudStorage timeout')), 3000)
-            );
-            await Promise.race([
-              tg.cloudStorage.setItem(key, value),
-              timeoutPromise
-            ]);
-            return;
-          } catch (e) {
-            console.warn('[CoinTap] CloudStorage write failed, falling back to localStorage:', e.message);
-          }
-        }
-        // Fallback to localStorage
+        // Always use localStorage for reliability
         localStorage.setItem(key, value);
       }
     };
