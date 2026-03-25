@@ -183,9 +183,22 @@
 
   function initTelegram() {
     try {
+      // Check if SDK failed to load
+      if (window.TelegramWebAppFailed) {
+        console.warn('[CoinTap] Telegram WebApp SDK failed to load');
+        return false;
+      }
+
       if (window.Telegram && window.Telegram.WebApp) {
         tg = window.Telegram.WebApp;
         isTelegramEnv = true;
+
+        // Check if we have valid initData (required for Telegram environment)
+        if (!tg.initData || tg.initData === '') {
+          console.warn('[CoinTap] Telegram initData is empty - may not be in Telegram environment');
+          // Still return true as we have the SDK, just no user context
+          return true;
+        }
 
         // Notify Telegram that the app is ready
         tg.ready();
@@ -196,11 +209,13 @@
         // Expand to full height
         tg.expand();
 
-        console.log('[CoinTap] Telegram WebApp initialized');
+        console.log('[CoinTap] Telegram WebApp initialized, initData length:', tg.initData.length);
         return true;
+      } else {
+        console.warn('[CoinTap] Telegram WebApp not available - SDK may not be loaded');
       }
     } catch (e) {
-      console.warn('[CoinTap] Telegram WebApp not available:', e.message);
+      console.error('[CoinTap] Telegram WebApp initialization error:', e);
     }
     return false;
   }
@@ -258,12 +273,19 @@
         // Try Telegram Cloud Storage first
         if (isTelegramEnv && tg && tg.cloudStorage) {
           try {
-            const value = await tg.cloudStorage.getItem(key);
+            // Add timeout for cloud storage operations
+            const timeoutPromise = new Promise((_, reject) =>
+              setTimeout(() => reject(new Error('CloudStorage timeout')), 3000)
+            );
+            const value = await Promise.race([
+              tg.cloudStorage.getItem(key),
+              timeoutPromise
+            ]);
             if (value !== null && value !== undefined) {
               return value;
             }
           } catch (e) {
-            console.warn('[CoinTap] CloudStorage read failed, falling back to localStorage');
+            console.warn('[CoinTap] CloudStorage read failed, falling back to localStorage:', e.message);
           }
         }
         // Fallback to localStorage
@@ -274,10 +296,17 @@
         // Try Telegram Cloud Storage first
         if (isTelegramEnv && tg && tg.cloudStorage) {
           try {
-            await tg.cloudStorage.setItem(key, value);
+            // Add timeout for cloud storage operations
+            const timeoutPromise = new Promise((_, reject) =>
+              setTimeout(() => reject(new Error('CloudStorage timeout')), 3000)
+            );
+            await Promise.race([
+              tg.cloudStorage.setItem(key, value),
+              timeoutPromise
+            ]);
             return;
           } catch (e) {
-            console.warn('[CoinTap] CloudStorage write failed, falling back to localStorage');
+            console.warn('[CoinTap] CloudStorage write failed, falling back to localStorage:', e.message);
           }
         }
         // Fallback to localStorage
@@ -559,22 +588,26 @@
   async function init() {
     console.log('[CoinTap] Initializing...');
 
-    // Initialize Telegram first
-    initTelegram();
+    try {
+      // Initialize Telegram first
+      initTelegram();
 
-    // Load saved game
-    await loadGame();
+      // Load saved game
+      await loadGame();
 
-    // Load sound setting
-    await loadSoundSetting();
+      // Load sound setting
+      await loadSoundSetting();
 
-    // Update display
-    updateDisplay();
+      // Update display
+      updateDisplay();
 
-    // Hide loading
-    elements.loadingOverlay.classList.add('hidden');
-
-    console.log('[CoinTap] Ready!');
+      console.log('[CoinTap] Ready!');
+    } catch (e) {
+      console.error('[CoinTap] Init error:', e);
+    } finally {
+      // Always hide loading, even if something failed
+      elements.loadingOverlay.classList.add('hidden');
+    }
   }
 
   // Start the game
