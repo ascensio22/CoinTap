@@ -555,24 +555,33 @@
     console.log('[CoinTap] Initializing...');
 
     try {
+      console.log('[CoinTap] Step 1: initTelegram');
       // Initialize Telegram first
-      initTelegram();
+      const tgResult = initTelegram();
+      console.log('[CoinTap] Step 1 result:', tgResult, 'isTelegramEnv:', isTelegramEnv);
 
+      console.log('[CoinTap] Step 2: loadGame');
       // Load saved game
       await loadGame();
+      console.log('[CoinTap] Step 2 done');
 
+      console.log('[CoinTap] Step 3: loadSoundSetting');
       // Load sound setting
       await loadSoundSetting();
+      console.log('[CoinTap] Step 3 done');
 
       // Update display
+      console.log('[CoinTap] Step 4: updateDisplay');
       updateDisplay();
 
       console.log('[CoinTap] Ready!');
     } catch (e) {
       console.error('[CoinTap] Init error:', e);
     } finally {
+      console.log('[CoinTap] Hiding loading overlay');
       // Always hide loading, even if something failed
       elements.loadingOverlay.classList.add('hidden');
+      console.log('[CoinTap] Loading overlay hidden');
     }
   }
 
